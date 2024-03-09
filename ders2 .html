@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="gc" width="900" height="900"></canvas>
+</body>
+<script>
+    var canvContext;
+    var canv;
+    window.onload=function(){
+        canv = document.getElementById("gc");
+        canvContext = canv.getContext("2d");
+        document.addEventListener("keydown",keyPush);
+        setInterval(game,1000/8);
+    }
+    
+    var xv=yv=0;
+    var px=py=10;
+    var gs=tc=30;
+    var ax=ay=15;
+    var trail=[];
+    var tail = 5;
+    //var scor=0;
+   
+
+    function game()
+	{
+        
+        px+=xv;
+        py+=yv;
+        if(px<0)
+		{ // yılan sol kenara gelirse
+           px=tc-1;
+        }
+        if(px>tc-1)
+		{ // yılan sağ kenara gelirse
+            px=0;
+        }
+        if(py<0)
+		{ // yılan üst kenara gelirse
+           py=tc-1;
+        }
+        if(py>tc-1)
+		{ // yılan alt kenara gelirse
+            py=0;
+        }
+        canvContext.fillStyle="black";// arka plan rengi
+        canvContext.fillRect(0,0,canv.width,canv.height);// ilk sol üst köşenin x kordinatı/y kordinatı /genişliği /yükseliği
+
+        canvContext.fillStyle="pink";//yılan rengi
+        for(var i=0;i<trail.length;i++)
+		{
+            canvContext.fillRect(trail[i].x*gs,trail[i].y*gs,gs-2,gs-2);//yılan her büyüdüğünde yılan rengine boyama yılanı büyütme
+            if(trail[i].x==px && trail[i].y==py)// yılanın kendini yeme durumu
+			{
+              tail=5;
+              
+            }
+        }
+        trail.push({x:px,y:py});
+        while(trail.length>tail)
+		{
+            trail.shift();
+        }
+  
+
+        canvContext.fillStyle="lime";//yem rengi
+        canvContext.fillRect(ax*gs,ay*gs,gs-2,gs-2);//GameSize yazmamızın sebebi Game size yi değiştirirsek bunlarda otamatik olarak değişsin
+
+        if(ax==px && ay == py)
+		{
+            tail++;
+            ax=Math.floor(Math.random()*tc);
+            ay=Math.floor(Math.random()*tc);
+           
+        }
+        
+        
+        
+    }
+   /* function scor()
+    {
+        ctx.font = "bold 30px 'courier new'";
+            ctx.fillStyle = "orange";
+            ctx.fillText("skor " + formatSkor(skor), canvas.width - 500, -500);
+            scor=+1
+    }
+*/
+
+
+    function keyPush(e)// e özel bir deyer kılavyeden basılan tuşları algılıyor
+    {
+        if(e.keyCode==37 && xv!=1)
+		{ //sol
+           xv=-1;
+           yv=0;
+        }
+        if(e.keyCode==38 && yv !=1)
+		{ //yukarı
+            xv=0;
+           yv=-1;
+        }
+        if(e.keyCode==39 && xv!=-1)
+		{ //sağ
+            xv=1;
+           yv=0;
+        }
+        if(e.keyCode==40 && yv !=-1)
+		{ //aşağı
+            xv=0;
+           yv=1;
+        }
+    }
+    
+</script>
+</html>
